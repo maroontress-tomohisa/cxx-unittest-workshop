@@ -10,6 +10,10 @@ target_include_directories(base64-test PRIVATE base64)
 
 target_link_libraries(base64-test base64 GTest::gtest_main)
 
+if(CMAKE_COMPILER_IS_GNUCXX)
+    target_link_libraries(base64-test gcov)
+endif()
+
 include(GoogleTest)
 
 gtest_discover_tests(base64-test)

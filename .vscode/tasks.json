@@ -4,7 +4,7 @@
         {
             "label": "Configure",
             "type": "shell",
-            "command": "cmake -S . -B build",
+            "command": "cmake -DCMAKE_BUILD_TYPE=Debug -S . -B build",
             "group": {
                 "kind": "build",
                 "isDefault": true
