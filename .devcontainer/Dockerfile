@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/devcontainers/cpp:0-debian-11
+FROM mcr.microsoft.com/devcontainers/cpp:0-ubuntu-22.04
 
 ARG REINSTALL_CMAKE_VERSION_FROM_SOURCE="none"
 
@@ -14,5 +14,12 @@ RUN if [ "${REINSTALL_CMAKE_VERSION_FROM_SOURCE}" != "none" ]; then \
 # RUN su vscode -c "${VCPKG_ROOT}/vcpkg install <your-port-name-here>"
 
 # [Optional] Uncomment this section to install additional packages.
-# RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
-#     && apt-get -y install --no-install-recommends <your-package-list-here>
+RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
+    && apt-get -y install --no-install-recommends gcc-12 g++-12 clang-15 gcovr \
+    && update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-12 12 \
+    && update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-12 12 \
+    && update-alternatives --install /usr/bin/gcov gcov /usr/bin/gcov-12 12 \
+    && update-alternatives --config gcc \
+    && update-alternatives --install /usr/bin/clang clang /usr/bin/clang-15 15 \
+    && update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-15 15 \
+    && update-alternatives --config clang
