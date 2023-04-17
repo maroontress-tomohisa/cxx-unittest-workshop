@@ -114,6 +114,16 @@ TEST(DecoderTest, twoIllegalPads)
     invalidTest("dw**", 2);
 }
 
+TEST(DecoderTest, illegalCharAndIllegalPad1)
+{
+    invalidTest("*w=*", 0);
+}
+
+TEST(DecoderTest, illegalCharAndIllegalPad2)
+{
+    invalidTest("d*=*", 1);
+}
+
 TEST(DecoderTest, trailing1char)
 {
     invalidTest("bGlnaHQgd", 8);

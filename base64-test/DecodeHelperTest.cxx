@@ -9,7 +9,38 @@ using base64::DecodeUnit;
 using base64::DecodeHelper;
 using base64::ParseError;
 using base64::RFC4648_TABLE;
+using base64::ZERO_CHAR;
 
+// 4文字をデコードして3バイト出力するdecodeUnit()の使用例
+TEST(DecodeHelperTest, decodeUnit_4chars_to_3byte)
+{
+    auto in = EncodeUnit {'T', 'W', 'F', 'u'};
+    auto expected = DecodeUnit {0x4d, 0x61, 0x6e};
+    auto actual = DecodeHelper::decodeUnit(RFC4648_TABLE, in, 0);
+    ASSERT_EQ(actual, expected);
+}
+
+// 3文字をデコードして2バイト出力するdecodeUnit()の使用例
+TEST(DecodeHelperTest, decodeUnit_3chars_to_2byte)
+{
+    // ZERO_CHARは 'A' ですが、符号表を引くと値 0 になります
+    auto in = EncodeUnit {'T', 'W', 'E', ZERO_CHAR};
+    auto expected = DecodeUnit {0x4d, 0x61, 0};
+    auto actual = DecodeHelper::decodeUnit(RFC4648_TABLE, in, 0);
+    ASSERT_EQ(actual, expected);
+}
+
+// 2文字をデコードして1バイト出力するdecodeUnit()の使用例
+TEST(DecodeHelperTest, decodeUnit_2chars_to_1byte)
+{
+    // ZERO_CHARは 'A' ですが、符号表を引くと値 0 になります
+    auto in = EncodeUnit {'T', 'Q', ZERO_CHAR, ZERO_CHAR};
+    auto expected = DecodeUnit {0x4d, 0, 0};
+    auto actual = DecodeHelper::decodeUnit(RFC4648_TABLE, in, 0);
+    ASSERT_EQ(actual, expected);
+}
+
+// 4つの6ビット値から3バイト生成するconvertUnit()の使用例
 TEST(DecodeHelperTest, convertUnit_cafe00)
 {
     auto sixBitsArray = std::array<std::uint8_t, 4> {0x32, 0x2f, 0x38, 0x00};
