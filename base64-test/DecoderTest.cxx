@@ -20,6 +20,33 @@ base64Test(const char* encoded, const char* expected)
     }
 }
 
+TEST(DecoderTest, empty)
+{
+    auto decoder = base64::Decoder {};
+    auto actual = decoder.apply("");
+    ASSERT_EQ(actual.size(), 0) << "size mismatched";
+}
+
+TEST(DecoderTest, oneByteWithPad)
+{
+    base64Test("TQ==", "M");
+}
+
+TEST(DecoderTest, oneByteWithoutPad)
+{
+    base64Test("TQ", "M");
+}
+
+TEST(DecoderTest, twoByteWithPad)
+{
+    base64Test("TWE=", "Ma");
+}
+
+TEST(DecoderTest, twoByteWithoutPad)
+{
+    base64Test("TWE", "Ma");
+}
+
 TEST(DecoderTest, noPad)
 {
     base64Test("TWFueSBoYW5kcyBtYWtlIGxpZ2h0IHdvcmsu",
@@ -124,6 +151,16 @@ TEST(DecoderTest, illegalCharAndIllegalPad2)
     invalidTest("d*=*", 1);
 }
 
+TEST(DecoderTest, extraCharsAfterPad)
+{
+    invalidTest("dw==dw==", 4);
+}
+
+TEST(DecoderTest, extraCharsAfterPad2)
+{
+    invalidTest("dw==yv4A", 4);
+}
+
 TEST(DecoderTest, trailing1char)
 {
     invalidTest("bGlnaHQgd", 8);
@@ -163,3 +200,27 @@ TEST(DecoderTest, extraPad4)
 {
     invalidTest("bGlnaHQg====", 8);
 }
+
+#if defined(BASE64_CANONICAL_ENCODING)
+
+TEST(DecoderTest, canonicalEncodingLast1byte)
+{
+    invalidTest("TR", 1);
+}
+
+TEST(DecoderTest, canonicalEncodingLast1byteWithPad)
+{
+    invalidTest("TR==", 1);
+}
+
+TEST(DecoderTest, canonicalEncodingLast2byte)
+{
+    invalidTest("TWF", 2);
+}
+
+TEST(DecoderTest, canonicalEncodingLast2byteWithPad)
+{
+    invalidTest("TWF=", 2);
+}
+
+#endif
