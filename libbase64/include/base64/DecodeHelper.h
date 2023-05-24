@@ -3,6 +3,7 @@
 
 #include <cstdint>
 #include <array>
+#include <vector>
 #include "base64/namespace.h"
 
 namespace base64 {
@@ -27,6 +28,9 @@ namespace base64 {
         static auto decodeUnit(const DecodeTable& table, const EncodeUnit& in,
             std::size_t position) -> DecodeUnit;
 
+        static auto decodeLastUnit(const DecodeTable &table, const EncodeUnit &in,
+            std::size_t position) -> std::vector<std::uint8_t>;
+
         /**
             与えられた配列の4つの6ビット値を、 DecodeUnit に変換します。
 
@@ -42,7 +46,6 @@ namespace base64 {
         /** インスタンス化を禁止します。 */
         DecodeHelper() {
         }
-
     };
 }
 

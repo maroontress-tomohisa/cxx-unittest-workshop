@@ -2,6 +2,8 @@ set(CMAKE_CXX_STANDARD 20)
 
 enable_testing()
 
+add_definitions(-DBASE64_CANONICAL_ENCODING)
+
 add_executable(base64-test
     DecoderTest.cxx
     DecodeHelperTest.cxx)
